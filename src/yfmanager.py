@@ -11,10 +11,13 @@ class Yfmanager:
         df = pd.DataFrame()
 
         for company in companies:
-            data = yf.download(company, start=date.today() - timedelta(days=self.config.days_to_fetch), end=date.today())
-            data = data.reset_index()
-            data["company_code"] = company
-            df = pd.concat([df, data])
+            try:
+                data = yf.download(company, start=date.today() - timedelta(days=self.config.days_to_fetch), end=date.today())
+                data = data.reset_index()
+                data["company_code"] = company
+                df = pd.concat([df, data])
+            except Exception as e:
+                print(e)
             
         if verbose > 0:
             print(df.head())

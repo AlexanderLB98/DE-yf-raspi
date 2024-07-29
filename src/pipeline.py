@@ -5,6 +5,7 @@ Here I will generate the pipeline that should be done
 from src.yfmanager import Yfmanager
 from src.dbmanager import DbManager
 from src.aux.utils import DotDict
+from src.telegram_manager import TelegramManager
 
 import json
 
@@ -16,7 +17,9 @@ def pipeline():
         config = DotDict(json.load(f))
         print(config)
         
-        
+    
+    tm = TelegramManager()    
+    
     db = DbManager()
     
     # First we should get a list with the companies from de DB 
@@ -27,6 +30,12 @@ def pipeline():
     yfmanager = Yfmanager(config=config)
     df = yfmanager.download_companies_yf(companies=companies_list)
     
+    if df.empty:
+        tm.bot_send_text("no data fetched")
+    else:
+        tm.bot_send_text("data fetched correctly")
+        tm.bot_send_text(df.head(2))
+        
     # Now we have to upload the df to the database
     db.add_df_to_postgresql(df)
     
