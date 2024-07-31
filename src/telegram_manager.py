@@ -2,6 +2,7 @@ import requests
 
 from datetime import datetime, timedelta
 import json
+import pandas as pd
 
 ### Custom functions
 import sys
@@ -22,12 +23,12 @@ class TelegramManager:
 
     def bot_send_text(self, bot_message):
         # Leo la configuración del json 
-        ()
+
         bot_token = self.config.get("token", 0)
         bot_chatID = self.config.get("chat_id", 0)
 
 
-        send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
+        send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + str(bot_message)
 
         response = requests.get(send_text)
 

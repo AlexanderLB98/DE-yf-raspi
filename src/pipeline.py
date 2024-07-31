@@ -34,7 +34,8 @@ def pipeline():
         tm.bot_send_text("no data fetched")
     else:
         tm.bot_send_text("data fetched correctly")
-        tm.bot_send_text(df.head(2))
+
+        tm.bot_send_text(str(df["company_code"].unique()))
         
     # Now we have to upload the df to the database
     db.add_df_to_postgresql(df)
