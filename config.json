@@ -2,5 +2,5 @@
     "scratch": {
         "companies": ["^AEX", "NVDA"]
     },
-    "days_to_fetch": 1
+    "days_to_fetch": 365
 }
