@@ -9,6 +9,7 @@ from src.dbmanager import DbManager
 from src.telegram_manager import TelegramManager
 from src.yfmanager import Yfmanager
 
+from src.get_local_tickers import get_local_tickers
 
 def pipeline(db=False, telegram=False):
 
@@ -24,8 +25,10 @@ def pipeline(db=False, telegram=False):
         # First we should get a list with the companies from de DB
         companies_list = db.get_all_tickers()
     else:
+        companies_list = get_local_tickers()
+        print(companies_list)
         # companies_list = ["^AEX", "NVDA"]
-        companies_list = config.scratch.companies
+        # companies_list = config.scratch.companies
         # companies_list = ["^AEX", "TSLA", "NVDA"]
 
     # Then we should download the data from yfinance
