@@ -27,12 +27,19 @@ def local_pipeline(telegram=False):
 
     df_full = pd.DataFrame()
     for index in index_list:
+        if not os.path.exists(os.path.join("data", index)):
+            os.mkdir(os.path.join("data", index))
+
+
         df_index = pd.DataFrame()
         companies_list = get_tickers_from_index(index)
         for company in companies_list:
             # Then we should download the data from yfinance
             yfmanager = Yfmanager(config=config)
             df = yfmanager.download_companies_yf(company)
+            if not len(df) > 1:
+                continue 
+
             df_index = pd.concat([df_index, df])
             if not os.path.exists(os.path.join("data", index, company)):
                 os.mkdir(os.path.join("data", index, company))
