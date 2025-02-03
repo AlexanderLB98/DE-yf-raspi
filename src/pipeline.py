@@ -5,6 +5,8 @@ Here I will generate the pipeline that should be done
 import json
 import os
 
+import pandas as pd
+
 from src.aux.utils import DotDict
 from src.dbmanager import DbManager
 from src.get_local_tickers import get_index, get_local_tickers, get_tickers_from_index
@@ -21,18 +23,25 @@ def local_pipeline(telegram=False):
         print(config)
 
     index_list = get_index()
-    index_list = ["^AEX"]
     print(index_list)
 
+    df_full = pd.DataFrame()
     for index in index_list:
+        df_index = pd.DataFrame()
         companies_list = get_tickers_from_index(index)
-        # Then we should download the data from yfinance
-        yfmanager = Yfmanager(config=config)
-        df = yfmanager.download_companies_yf(companies=companies_list)
-        if not os.path.exists(os.path.join("data", index)):
-            os.mkdir(os.path.join("data", index))
+        for company in companies_list:
+            # Then we should download the data from yfinance
+            yfmanager = Yfmanager(config=config)
+            df = yfmanager.download_companies_yf(company)
+            df_index = pd.concat([df_index, df])
+            if not os.path.exists(os.path.join("data", index, company)):
+                os.mkdir(os.path.join("data", index, company))
 
-        df.to_csv(os.path.join("data", index, index + ".csv"))
+            df.to_csv(os.path.join("data", index, company, company + ".csv"))
+            df_index.to_csv(os.path.join("data", index, index + ".csv"))
+        df_full = pd.concat([df_full, df_index])
+    df_full.to_csv(os.path.join("data", "df_full.csv"))
+    print(f"Final df has {len(df_full)} entries")
 
 
 def pipeline(db=False, telegram=False):
